@@ -1,6 +1,7 @@
 const express=require('express');
 var loanRoute= express.Router();
 const cors=require('../utils/middlewares/cors');
+const loanOperations=require('../db/loanOperations');
 
 //testin if backend is working
 // loanRoute.get('/',(request,response)=>{
@@ -11,11 +12,9 @@ const cors=require('../utils/middlewares/cors');
 
 loanRoute.post('/loginUser',cors,(request,response)=>{
 
-    let userObject=request.body.userObject;
-    console.log('userObject received is',userObject);
-    response.json({
-        text:"gg"
-    })
+    let userObj=request.body.userObject;
+    loanOperations.loginUser(userObj,request,response);
+
 });
 
 module.exports=loanRoute;

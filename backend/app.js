@@ -35,9 +35,5 @@ var port =process.env.PORT || 1234;
 app.listen(port,()=>{
 
     process.stdout.write('server started on port '+port);
-    const mongoose=require('mongoose');
 
-mongoose.connect('mongodb://nik72619c:nikhil1997@ds121753.mlab.com:21753/loan',()=>{
-console.log("successfully connected to the databse...");
-});
 });

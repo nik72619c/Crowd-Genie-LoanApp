@@ -1,4 +1,5 @@
 import React from "react";
+import axios from 'axios';
 
 export class Login extends React.Component {
   loginUSer() {
@@ -21,20 +22,19 @@ export class Login extends React.Component {
 
 	else {
 
-	  userObject = JSON.stringify(userObject);
-      fetch("http://localhost:1234/loginUser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body:userObject
+	  
+      axios.post("http://localhost:1234/loginUser", {
+   
+	  userObject:userObject
+   
       })
-        .then(data => data.json())
+    
 		.then(data => {
 			console.log("data obtained", data);
 		  })
         .catch(err => console.log("err occured", err));
-    }
+	}
+	
   }
 
   render() {
