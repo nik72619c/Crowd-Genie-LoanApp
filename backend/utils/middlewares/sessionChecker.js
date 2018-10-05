@@ -34,7 +34,7 @@ let sessionChecker= ( request , response , next )=> {
        response.json({
            status: 403,
            responseText: 'session not found'
-       })
+       });
 
     }
 

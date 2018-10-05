@@ -1,27 +1,17 @@
 const express=require('express');
 const app=express();
-
-const cors=require('cors');
-
+// const cors=require('./utils/middlewares/cors');
 const bodyParser= require('body-parser');
-const adminRoute=require('./routes/adminroutes');
 const session=require('express-session');
+const loanRoute=require('./routes/loanRoute');
+const cors = require('cors');
 
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({extended: false}));
+// app.use(bodyParser.json());
+app.use(express.json())
 
-// app.get('/', (request, response)=>{
 
-// response.send('node backend works');
-
-// });
-
-app.use(cors({
-
-    origin: '*',
-   
-}));
 const store=require('./utils/sessionstore');
 app.use(session({
 store: store,
@@ -36,8 +26,8 @@ store: store,
     }
 
 }));
-
-// app.use('/',adminRoute);
+app.use(cors());
+app.use('/',loanRoute);
 // app.use('products',productRoute);
 
 
@@ -45,4 +35,9 @@ var port =process.env.PORT || 1234;
 app.listen(port,()=>{
 
     process.stdout.write('server started on port '+port);
+    const mongoose=require('mongoose');
+
+mongoose.connect('mongodb://nik72619c:nikhil1997@ds121753.mlab.com:21753/loan',()=>{
+console.log("successfully connected to the databse...");
+});
 });

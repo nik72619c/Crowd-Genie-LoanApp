@@ -1,5 +1,5 @@
 const sessionstore=require('sessionstore');
-const config=require('../db/common/config');
+
 var store=sessionstore.createSessionStore({
 
     type: 'mongodb',
