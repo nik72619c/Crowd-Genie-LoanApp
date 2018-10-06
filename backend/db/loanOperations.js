@@ -1,6 +1,36 @@
 const Users=require('./schema/userSchema');
 var loanOperations= {
 
+    newLoan(loanObject,request,response){
+
+        console.log('loanObject received', loanObject);
+        Users.find({"email":loanObject.email},(err,content)=>{
+
+            if(err){
+                response.json({
+                    error:err,
+                    responseText: 'error finding the loan data for customer'
+                });
+            }
+
+            else if(content && content.length>0){
+
+                console.log('content is', content);
+                response.json({
+                    data: content
+                });
+
+            }
+
+            else{
+
+                response.json({
+                    responseText: 'some other error occured'
+                });
+            }
+        });
+    },
+
     loginUser(userObject,request,response){
 
         console.log('userObject obtained at backend',userObject);
@@ -15,9 +45,33 @@ var loanOperations= {
                 else if(content && content.length>0){
                     let userData=content;
                     console.log('content is', userData);
+                    request.session.email=content[0].email;
+            request.session.save(err=>{
+
+                if(err){
+                    console.log('error saving the session...');
                     response.json({
-                        content: content
+                        error: err,
+                        responseText: 'error saving the session',
+                        status: 500
                     });
+                }
+
+                else {
+
+                    console.log('session saved successfully..');
+                    
+                console.log('session created');
+                console.log('request.session ', request.session);
+          
+                    response.json({
+                        content: content,
+                        sessionID: request.sessionID,
+                        
+                    });
+                }
+            });
+
                 }
 
                 else if(content.length==0 || content==[]){
@@ -28,6 +82,7 @@ var loanOperations= {
                         'email': userObject.email,
                         'password': userObject.password,
                         'role': userObject.role
+
                     });
 
                     user.save((err)=>{
@@ -40,10 +95,30 @@ var loanOperations= {
 
                         else{
 
-                           response.json({
-                               status: 200,
-                               responseText: 'added successfully'
-                           });
+             request.session.email=userObject.email;
+            request.session.save(err=>{
+
+                if(err){
+                    console.log('error saving the session...');
+                    response.json({
+                        error: err,
+                        responseText: 'error saving the session'
+                    });
+                }
+
+                else {
+
+                    console.log('session saved successfully..');
+                }
+            });
+
+                response.json({
+
+                   content: content,
+                    sessionID: request.sessionID,
+                    responseText: 'added'
+                });
+                       
                         }
                     });
              
@@ -57,7 +132,6 @@ var loanOperations= {
                         responseText: 'inside the else of fetching user request'
                     });
                 }
-            
         });
 
     }

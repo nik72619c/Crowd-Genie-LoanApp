@@ -2,6 +2,11 @@ import React from "react";
 import axios from 'axios';
 
 export class Login extends React.Component {
+
+	constructor(props){
+
+		super(props);
+	}
   loginUSer() {
     let selectOptions = document.getElementsByClassName("roleSelect")[0];
 
@@ -22,7 +27,6 @@ export class Login extends React.Component {
 
 	else {
 
-	  
       axios.post("http://localhost:1234/loginUser", {
    
 	  userObject:userObject
@@ -30,7 +34,30 @@ export class Login extends React.Component {
       })
     
 		.then(data => {
-			console.log("data obtained", data);
+      console.log("data obtained", data.data);
+      // if(data.isAuth==false){
+      //   console.log('inside if');
+      //   this.props.history.push('/');
+      // }
+    
+        // console.log('inside else');
+      var response=data.data;
+      
+			if(response.content[0] && response.content[0].role=="admin"){
+
+        localStorage.sessionId=response.sessionID;
+        localStorage.email=response.content[0].email;
+				this.props.history.push('/admin/dashboard');
+
+      }
+
+      else if(response.content[0] && response.content[0].role=="customer"){
+        localStorage.sessionId=response.sessionID;
+        localStorage.email=response.content[0].email;
+				this.props.history.push('/customer/dashboard');
+      }
+    
+
 		  })
         .catch(err => console.log("err occured", err));
 	}

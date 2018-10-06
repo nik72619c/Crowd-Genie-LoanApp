@@ -4,19 +4,33 @@ const app=express();
 const bodyParser= require('body-parser');
 const session=require('express-session');
 const loanRoute=require('./routes/loanRoute');
-const cors = require('cors');
+// const cors = require('cors');
 
-
-// app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: false}));
 // app.use(bodyParser.json());
-app.use(express.json())
+app.use(bodyParser.json());
 
+// app.use(cors({
+//    origin: 'http://localhost:3000',
+//     credentials: true
+
+// }));
+
+app.use(function(req, res, next) {
+    console.log('inside the cors middleware');
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Credentials','true');
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+    res.setHeader("Cache-Control", "no-cache");
+    next();
+});
 
 const store=require('./utils/sessionstore');
 app.use(session({
-store: store,
+store : store,
     secret: 'nik',
-    resave: true,
+    resave: false,
     saveUninitialized: true,
     cookie: {
 
@@ -26,14 +40,12 @@ store: store,
     }
 
 }));
-app.use(cors());
+
 app.use('/',loanRoute);
 // app.use('products',productRoute);
 
 
 var port =process.env.PORT || 1234;
 app.listen(port,()=>{
-
     process.stdout.write('server started on port '+port);
-
 });
