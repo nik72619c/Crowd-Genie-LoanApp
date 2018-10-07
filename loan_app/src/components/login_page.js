@@ -5,7 +5,9 @@ export class Login extends React.Component {
 
 	constructor(props){
 
-		super(props);
+    super(props);
+    this.isShow=false;
+ 
 	}
   loginUSer() {
     let selectOptions = document.getElementsByClassName("roleSelect")[0];
@@ -35,15 +37,15 @@ export class Login extends React.Component {
     
 		.then(data => {
       console.log("data obtained", data.data);
-      // if(data.isAuth==false){
-      //   console.log('inside if');
-      //   this.props.history.push('/');
-      // }
-    
-        // console.log('inside else');
       var response=data.data;
+
+        if(data.data.isUserAdded==true){
+          console.log('inside main if...');
+          document.getElementById('hidden').setAttribute("id","show");
+        }
       
-			if(response.content[0] && response.content[0].role=="admin"){
+      
+			else if(response.content[0] && response.content[0].role=="admin"){
 
         localStorage.sessionId=response.sessionID;
         localStorage.email=response.content[0].email;
@@ -60,7 +62,7 @@ export class Login extends React.Component {
       }
 
       else if(response.content[0] && response.content[0].role=="lender"){
-        
+
         console.log('response.sessionId', response.sessionID);
         console.log('inside lender if login');
         localStorage.sessionId=response.sessionID;
@@ -126,6 +128,7 @@ export class Login extends React.Component {
             </div>
           </div>
         </div>
+        <div className="bg bg-warning text-red mt-4" id="hidden">We couldnt find you so you were registered...Login again to continue !</div>
       </div>
     );
   }

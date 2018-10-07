@@ -241,7 +241,8 @@ var loanOperations= {
 
                    content: content,
                     sessionID: request.sessionID,
-                    responseText: 'added'
+                    responseText: 'added',
+                    isUserAdded: true
                 });
                        
                         }
