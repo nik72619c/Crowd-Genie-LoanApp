@@ -56,7 +56,7 @@ loanRoute.post('/rejectLoan', sessionChecker,(request, response)=>{
     loanOperations.rejectLoan(request.body,request,response);
 });
 
-loanRoute.post('/approveLoan', (request,response)=>{
+loanRoute.post('/approveLoan',sessionChecker, (request,response)=>{
     console.log('got req.body for approve loan', request.body);
     loanOperations.approveLoan(request.body,request,response);
 
