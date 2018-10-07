@@ -1,5 +1,130 @@
 const Users=require('./schema/userSchema');
+const uniqueString=require('unique-string');
 var loanOperations= {
+    rejectLoan(loanObject, request ,response){
+
+        console.log('got loanObject for rejectLoan', loanObject);
+        Users.update({"loans.loanid": loanObject.loanid},{ $set:  {"loans.$.status": "rejected"}},(err)=>{
+            if(err){
+                console.log('error occured while rejecting loan...');
+                response.json({
+                    error:err,
+                    responseText:'error occured while registering loan...',
+                    isRejected: false
+                });
+            }
+
+            else{
+                console.log('new loan added successfully..');
+                response.json({
+                    isRejected: true,
+                   
+                });
+            }
+
+        });
+    },
+
+    approveLoan(loanObject,request,response){
+        console.log('got loanObject for rejectLoan', loanObject);
+        Users.update({"loans.loanid": loanObject.loanid},{ $set: 
+             {"loans.$.status": "approved"}},(err)=>{
+            if(err) {
+                console.log('error occured while approving loan...');
+                
+                response.json({
+                    error:err,
+                    responseText:'error occured while approving loan...',
+                    isApproved: false
+                });
+            }
+
+            else{
+                console.log('approved successfully..');
+                // response.json({
+                //     isApproved: true,
+                   
+                // });
+
+                Users.update({"loans.loanid": loanObject.loanid},{$inc: {"vallet": loanObject.amount}},(err)=>{
+
+                    console.log('done approving finally...');
+                    response.json({
+                        isApproved: true
+                    })
+
+                })
+
+
+                
+               
+            }
+
+        });
+
+    },
+
+    getLoans(request,response){
+
+        Users.find({"role": "customer"},'loans email', (err,content)=>{
+
+            if(err){
+                console.log('error occured while registering loan...');
+                response.json({
+                    error:err,
+                    responseText:'error occured while registering loan...'
+                });
+            }
+
+            else if(content && content.length>0){
+                console.log('content in getLoan is', content);
+                response.json({
+                    content: content
+                         });
+            }
+
+            else{
+                console.log('error finding the  loans...');
+                response.json({
+                    error: 'error findig loans'
+                });
+            }
+            
+            
+        })
+
+    },
+
+    requestNewLoan(loanObject, request, response){
+
+        console.log('requesrtNewLoanObject received', loanObject);
+        let uniqueId=uniqueString();
+          console.log('uniqueId is', uniqueId);
+          const loanObj= {
+              loanid: uniqueId,
+              amount: loanObject.amount,
+              status: "pending",
+              description: loanObject.description
+          }
+
+          Users.update({"email": loanObject.email}, {$push:{loans: loanObj}},(err)=>{
+              if(err){
+                  console.log('error occured while registering loan...');
+                  response.json({
+                      error:err,
+                      responseText:'error occured while registering loan...'
+                  });
+              }
+
+              else{
+                  console.log('new loan added successfully..');
+                  response.json({
+                      isAdded: true,
+                      loanObject: loanObj
+                  });
+              }
+          })
+    },
 
     newLoan(loanObject,request,response){
 

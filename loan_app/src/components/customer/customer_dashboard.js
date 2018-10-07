@@ -27,8 +27,9 @@ export class CustomerDashboard extends React.Component{
         }
         }).then(data=>{
 
-            if(data.data.isAuth=='false'){
+            if(data.data.isAuth===false){
 
+        console.log('sessionChecker returned isAtug..');
                 this.props.history.push('/');
                 localStorage.clear();
             }
@@ -49,6 +50,63 @@ export class CustomerDashboard extends React.Component{
        
     }
 
+    requestNewLoan(){
+
+        console.log('requestNewLoan called..');
+        if(this.refs.amount.value && this.refs.description.value ){
+
+            console.log('inside if..');
+            axios.post('http://localhost:1234/requestNewLoan',{
+
+            email: localStorage.getItem('email'),
+            amount: this.refs.amount.value,
+            description: this.refs.description.value,
+            sessionId: localStorage.getItem('sessionId')
+
+            },{withCredentials: true}).then(data=>{
+                console.log('data', data);
+                if(data.data.isAuth==false){
+                    console.log('sessionChecker returned isAtug..');
+                    this.props.history.push('/');
+                    localStorage.clear();
+                }
+
+                else if(data.data.isAdded==true){
+
+
+                    console.log('data.data', data.data);
+                    let loanObject= data.data.loanObject;
+                    console.log('data.data.aloanObject', loanObject);
+                   this.userData[0].loans.push(loanObject);
+                   console.log('new userData', this.userData);
+                   this.setState({userData: this.userData},()=>{
+                       console.log('updated the userData');
+                   });
+
+
+                }
+
+                else{
+
+                    alert('oops !loan could not be added');
+                }
+            
+            });
+        }
+
+        else{
+
+            alert('kindly fill all the credentials properly..');
+        }
+
+    }
+
+    logOut(){
+        this.props.history.push('/');
+        localStorage.clear();
+
+    }
+
     render(){
 
         console.log('render called...');
@@ -56,11 +114,13 @@ export class CustomerDashboard extends React.Component{
         if(this.isDataPresent==true){
 
         return (<div>
-            customer dashboard
+            <h1 className="text-danger">Customer Dashboard</h1>
+<div><h1>YOUR VALLET: {this.state.userData[0].vallet}</h1></div>
+            <div className="mb-3 mt-3"><a href="#" className="p-2 bg-primary text-white" onClick={this.logOut.bind(this)}>LOGOUT</a></div>
             <table className="table table-bordered">
             <thead className="thead-dark">
               <tr>
-              <th scope="col">sno</th> 
+              
                 <th scope="col">Loan id</th>
                 <th scope="col">Amount</th>
                 <th scope="col">description</th>
@@ -71,16 +131,16 @@ export class CustomerDashboard extends React.Component{
            
             <tbody>
             {
-                this.state.userData[0].loans.map((data)=>{
+                localStorage.getItem('sessionId')? this.state.userData[0].loans.map((data)=>{
                     return <tr key={this.rowCount}>
-                   <td>{this.rowCount+1}</td>
+                   
                    <td>{data.loanid}</td>
                    <td>{data.amount}</td>
                    <td>{data.description}</td>
                    <td>{data.status}</td>
                    </tr>
                 
-                })
+                }) : this.props.history.push('/')
 
                 
             }

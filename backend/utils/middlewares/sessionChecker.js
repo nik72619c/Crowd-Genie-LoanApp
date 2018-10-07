@@ -1,5 +1,5 @@
 var sessionChecker= ( request , response , next )=> {
-console.log('gg', request.body);
+
     // console.log('request inside the sessionChecker...');
     // console.log(request.method);
     // console.log('request.body.sessionId',request.body.sessionId);
@@ -44,6 +44,9 @@ console.log('gg', request.body);
 
     // 
     const store=require('../sessionstore');
+    console.log('req.body.sessionId inside middleware',request.body.sessionId);
+    if(request.method=='POST'){
+        console.log('sessionChecker got the post request.');
     store.get(request.body.sessionId,(err,session)=>{
         if(err){
             console.log('err');
@@ -51,11 +54,54 @@ console.log('gg', request.body);
                 isAuth: false
             });
         }
+
+        else if(!session){
+
+            console.log('inside the else if of the sessionChecker..');
+            response.json({
+                isAuth: false
+            });
+            
+        }
         else{
 
+        console.log('inside else of sessionChecker..');
          next();
         }
     });
+
+}
+
+else{
+
+    console.log('sessionChecker got the get request...');
+    store.get(request.param('sessionId'),(err,session)=>{
+        if(err){
+            console.log('err');
+            response.json({
+                isAuth: false
+            });
+        }
+
+        else if(!session){
+
+            console.log('inside the else if of the sessionChecker..');
+            
+            response.json({
+                isAuth: false
+            });
+            
+        }
+        else{
+
+        console.log('inside else of sessionChecker..');
+        console.log('sessionId inside the sessionChecker is', request.param('sessionId'));
+         next();
+        }
+    });
+
+
+}
 
 };
 

@@ -52,9 +52,21 @@ export class Login extends React.Component {
       }
 
       else if(response.content[0] && response.content[0].role=="customer"){
+        console.log('response.sessionId', response.sessionID);
+        console.log('inside cusstomer if login');
         localStorage.sessionId=response.sessionID;
         localStorage.email=response.content[0].email;
 				this.props.history.push('/customer/dashboard');
+      }
+
+      else if(response.content[0] && response.content[0].role=="lender"){
+        
+        console.log('response.sessionId', response.sessionID);
+        console.log('inside lender if login');
+        localStorage.sessionId=response.sessionID;
+        localStorage.email=response.content[0].email;
+        this.props.history.push('/lender/dashboard');
+        
       }
     
 

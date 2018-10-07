@@ -25,6 +25,7 @@ export class AdminDashboard extends React.Component{
 
         return (
           <div>
+            <h1 className="text-danger">Admin Dashboard</h1>
             <table className="table">
             <thead className="thead-dark">
               <tr>

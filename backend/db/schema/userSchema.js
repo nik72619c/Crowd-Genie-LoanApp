@@ -7,7 +7,7 @@ var userSchema= new schema({
     "role": String,
     "vallet":{type: Number, default: 0},
     "loans": [{
-    "loanid": Number,
+    "loanid": String,
     "amount": Number,
     "status": String,
     "description": String

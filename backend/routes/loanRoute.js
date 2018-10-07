@@ -28,7 +28,7 @@ loanRoute.post('/test',(request,response)=>{
 
 });
 
-loanRoute.get('/newLoan',(request,response)=>{
+loanRoute.get('/newLoan',sessionChecker,(request,response)=>{
 
     var loanObject={
         email: request.param('email'),
@@ -37,5 +37,29 @@ loanRoute.get('/newLoan',(request,response)=>{
     loanOperations.newLoan(loanObject,request,response);
 
 });
+
+loanRoute.post('/requestNewLoan',sessionChecker,(request,response)=>{
+
+    console.log('request.body inside /requestNewLoan', request.body);
+
+    console.log('requestNewLoanObject received..',request.body);
+    loanOperations.requestNewLoan(request.body,request,response);
+});
+
+loanRoute.get('/getLoans',sessionChecker,(request,response)=>{
+
+    loanOperations.getLoans(request,response);
+});
+
+loanRoute.post('/rejectLoan', sessionChecker,(request, response)=>{
+    console.log('got req.body for approve loan', request.body);
+    loanOperations.rejectLoan(request.body,request,response);
+});
+
+loanRoute.post('/approveLoan', (request,response)=>{
+    console.log('got req.body for approve loan', request.body);
+    loanOperations.approveLoan(request.body,request,response);
+
+})
 
 module.exports=loanRoute;
