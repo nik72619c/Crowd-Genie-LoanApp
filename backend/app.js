@@ -4,6 +4,7 @@ const app=express();
 const bodyParser= require('body-parser');
 const session=require('express-session');
 const loanRoute=require('./routes/loanRoute');
+const path= require('path');
 // const cors = require('cors');
 
 app.use(bodyParser.urlencoded({extended: false}));
@@ -43,6 +44,18 @@ store : store,
 
 app.use('/',loanRoute);
 // app.use('products',productRoute);
+
+//serve static assets if in production mode
+
+if(process.env.NODE_ENV=='production'){
+
+    //set static asset folder
+    app.use(express.static('../loan_app/build'));
+    app.get('*', (req,res)=>{
+
+        res.sendFile(path.resolve(__dirname,'loan_app', 'build','index.html'));
+    })
+}
 
 
 var port =process.env.PORT || 1234;
