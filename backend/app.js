@@ -50,10 +50,10 @@ app.use('/',loanRoute);
 if(process.env.NODE_ENV=='production'){
 
     //set static asset folder
-    app.use(express.static('../loan_app/build'));
+    app.use(express.static('/loan_app/build'));
     app.get('*', (req,res)=>{
 
-        res.sendFile(path.resolve(__dirname,'../loan_app', 'build','index.html'));
+        res.sendFile(path.resolve(__dirname,'/loan_app', 'build','index.html'));
     })
 }
 
@@ -61,4 +61,5 @@ if(process.env.NODE_ENV=='production'){
 var port =process.env.PORT || 1234;
 app.listen(port,()=>{
     process.stdout.write('server started on port '+port);
+    
 });
